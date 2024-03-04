@@ -10,8 +10,20 @@ import { checkWinnerFrom, checkEndGame } from "./logic/board"
 
 function App() {
   // Definición de los estados del juego: tablero, turno y ganador
-  const [board, setBoard] = useState(Array(9).fill(null))
-  const [turn, setTurn] = useState(TURNS.X)
+  const [board, setBoard] = useState(() => {
+    // Se intenta obtener el tablero almacenado en el localStorage del navegador.
+    const boardFromStorage = window.localStorage.getItem('board')
+    // Si se encuentra un tablero en el localStorage, se convierte de JSON a objeto de JavaScript.
+    // De lo contrario, se crea un nuevo tablero con 9 espacios vacíos.
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
+  })
+  const [turn, setTurn] = useState(() => {
+    // Se intenta obtener el turno almacenado en el localStorage del navegador.
+    const turnFromStorage = window.localStorage.getItem('turn');
+    // Si se encuentra un turno en el localStorage, se devuelve.
+    // De lo contrario, se establece el turno inicial como 'TURNS.X'.
+    return turnFromStorage ?? TURNS.X;
+  })
   const [winner, setWinner] = useState(null) // Null = no hay ganador, false = empate
 
   // Función para reiniciar el juego
@@ -19,6 +31,9 @@ function App() {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
     setWinner(null)
+    // Elimina los datos almacenados del tablero y el turno del localStorage.
+    window.localStorage.removeItem('board');
+    window.localStorage.removeItem('turn');
   }
 
   // Función para actualizar el tablero después de cada jugada
@@ -34,6 +49,10 @@ function App() {
     // Cambia el turno al siguiente jugador
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
+    // Guardar partida
+    // Se almacena el nuevo estado del tablero como un objeto JSON y el turno actual en el localStorage.
+    window.localStorage.setItem('board', JSON.stringify(newBoard));
+    window.localStorage.setItem('turn', newTurn);
     // Comprueba si hay un ganador después de la jugada
     const newWinner = checkWinnerFrom(newBoard)
     if (newWinner) {
