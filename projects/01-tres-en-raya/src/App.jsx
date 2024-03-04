@@ -1,43 +1,58 @@
+// Importación de los hooks useState y la función confetti desde sus respectivos módulos
 import { useState } from "react"
 import confetti from "canvas-confetti"
+
+// Importación del componente Square, del componente WinnerModal, las constantes de turnos y las funciones de lógica del tablero
 import { Square } from "./components/Square"
+import { WinnerModal } from "./components/WinnerModal"
 import { TURNS } from "./constants/constants"
 import { checkWinnerFrom, checkEndGame } from "./logic/board"
-import { WinnerModal } from "./components/WinnerModal"
 
 function App() {
-
+  // Definición de los estados del juego: tablero, turno y ganador
   const [board, setBoard] = useState(Array(9).fill(null))
   const [turn, setTurn] = useState(TURNS.X)
   const [winner, setWinner] = useState(null) // Null = no hay ganador, false = empate
 
+  // Función para reiniciar el juego
   const resetGame = () => {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
     setWinner(null)
   }
 
+  // Función para actualizar el tablero después de cada jugada
   const updateBoard = (index) => {
+    // Verifica si la casilla ya está marcada o si ya hay un ganador
     if (board[index] || winner) return
+    // Crea una copia del tablero actual
     const newBoard = [...board]
+    // Actualiza la casilla marcada con el símbolo del turno actual
     newBoard[index] = turn
+    // Actualiza el tablero con la nueva jugada
     setBoard(newBoard)
+    // Cambia el turno al siguiente jugador
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
+    // Comprueba si hay un ganador después de la jugada
     const newWinner = checkWinnerFrom(newBoard)
     if (newWinner) {
+      // Dispara efectos de confeti si hay un ganador
       confetti()
       setWinner(newWinner)
     } else if (checkEndGame(newBoard)) {
+      // Si no hay ganador pero el juego ha terminado, establece el estado del ganador como empate
       setWinner(false)
     }
   }
 
+  // Devuelve la estructura JSX del juego
   return (
     <main className='board'>
-      <h1>3 en raya</h1>
+      <h1>TRES EN RAYA</h1>
       <section className="game">
         {
+          // Mapea cada casilla del tablero para renderizar el componente Square
           board.map((_, index) => {
             return (
               <Square
@@ -51,11 +66,14 @@ function App() {
           })
         }
       </section>
+      {/* Sección que muestra el turno actual */}
       <section className="turn">
         <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
       </section>
+      {/* Botón para reiniciar el juego */}
       <button onClick={resetGame}>Reset</button>
+      {/* Modal que muestra el ganador */}
       <WinnerModal resetGame={resetGame} winner={winner}></WinnerModal>
     </main>
   )
