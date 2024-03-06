@@ -6,6 +6,7 @@
 Aqui subiré proyectos de React realizados por mi, habrá proyectos hechos desde 0 y otros con cursos y tutoriales. 
 
 </div>
+
 ## ⌨️ Proyectos de React con código y preview
 
 | Número | Proyecto | Código | Web |
