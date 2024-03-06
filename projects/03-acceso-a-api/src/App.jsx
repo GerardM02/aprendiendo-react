@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-
-const FACTS_URL = 'https://catfact.ninja/fact'
+import { getNewFact } from './services/facts'
 const IMAGE_PREFIX_URL = 'https://cataas.com/cat/says/'
 
 function App () {
@@ -8,9 +7,7 @@ function App () {
   const [imgUrl, setImgUrl] = useState()
 
   useEffect(() => {
-    fetch(FACTS_URL)
-      .then(res => res.json())
-      .then(data => setFact(data.fact))
+    getNewFact().then(setFact)
   }, [])
 
   useEffect(() => {
@@ -19,10 +16,15 @@ function App () {
     setImgUrl(`${IMAGE_PREFIX_URL}${firstThreeWordsFromFact}`)
   }, [fact])
 
+  const handleClick = async () => {
+    const newFact = await getNewFact()
+    setFact(newFact)
+  }
+
   return (
     <main>
       <section>
-        <button>New fact</button>
+        <button onClick={handleClick}>New fact</button>
         {fact && <p>Fact: {fact}</p>}
         {imgUrl && <img src={imgUrl} alt='Image extracted from an api with the first 3 words given from another api' />}
       </section>
