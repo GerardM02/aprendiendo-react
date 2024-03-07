@@ -3,7 +3,7 @@
 
 # Aprendiendo React ⚛️
 
-Aqui subiré proyectos de React realizados por mi, habrá proyectos hechos desde 0 y otros con cursos y tutoriales. 
+Aqui subiré proyectos de React realizados por mi, habrá proyectos hechos desde cero y otros con la ayuda de cursos y tutoriales. 
 
 </div>
 
